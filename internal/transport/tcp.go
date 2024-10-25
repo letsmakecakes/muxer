@@ -73,6 +73,20 @@ func (t *TCPSourceHandler) Listen(ctx context.Context, forwardFunc func([]byte))
 	}
 }
 
+// Send writes the message to the TCP destination.
+func (t *TCPDestinationHandler) Send(message []byte) error {
+	t.mu.Lock()
+	defer t.mu.Lock()
+
+	_, err := t.conn.Write(message)
+	if err != nil {
+		log.Printf("Error sending to TCP destination %s: %v\n", t.address, err)
+		return err
+	}
+
+	return err
+}
+
 // Close stops the TCP listener.
 func (t *TCPSourceHandler) Close() error {
 	return t.listener.Close()
