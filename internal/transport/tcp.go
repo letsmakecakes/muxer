@@ -91,3 +91,8 @@ func (t *TCPDestinationHandler) Send(message []byte) error {
 func (t *TCPSourceHandler) Close() error {
 	return t.listener.Close()
 }
+
+// Close closes the TCP connection.
+func (t *TCPDestinationHandler) Close() error {
+	return t.conn.Close()
+}
