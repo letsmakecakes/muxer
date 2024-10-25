@@ -54,3 +54,8 @@ func (t *TCPSourceHandler) Listen(ctx context.Context, forwardFunc func([]byte))
 		}(conn)
 	}
 }
+
+// Close stops the TCP listener.
+func (t *TCPSourceHandler) Close() error {
+	return t.listener.Close()
+}
