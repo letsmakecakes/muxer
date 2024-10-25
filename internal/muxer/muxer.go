@@ -87,3 +87,23 @@ func (m *Muxer) forwardMessage(message []byte) {
 		destHandler.Send(message)
 	}
 }
+
+// Stop gracefully shuts down the muxer and cleans up all handlers.
+func (m *Muxer) Stop() error {
+	m.cancel()  // Signal all goroutines to stop
+	m.wg.Wait() // Wait for all goroutines to complete
+
+	// Close source handler
+	if err := m.sourceHandler.Close(); err != nil {
+		return err
+	}
+
+	// Close each destination handler
+	for _, handler := range m.destHandlers {
+		if err := handler.Close(); err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
