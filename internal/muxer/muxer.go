@@ -80,3 +80,10 @@ func (m *Muxer) Start() error {
 	m.wg.Wait()
 	return nil
 }
+
+// forwardMessage takes a message from the source and forwards it to each destination.
+func (m *Muxer) forwardMessage(message []byte) {
+	for _, destHandler := range m.destHandlers {
+		destHandler.Send(message)
+	}
+}
