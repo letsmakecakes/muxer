@@ -6,12 +6,20 @@ import (
 	"fmt"
 	"log"
 	"net"
+	"sync"
 )
 
 // TCPSourceHandler listens for incoming TCP connections and forwards messages to destinations.
 type TCPSourceHandler struct {
 	address  string // TCP address to listen on (e.g., "localhost:8080")
 	listener net.Listener
+}
+
+// TCPDestinationHandler connects to a TCP destination and sends messages.
+type TCPDestinationHandler struct {
+	address string     // Address to send messages to (e.g., "192.168.1.10:9001")
+	conn    net.Conn   // Connection to the destination
+	mu      sync.Mutex // Mutex to manage concurrent writes
 }
 
 // NewTCPSourceHandler initializes a new TCP source handler.
@@ -22,6 +30,16 @@ func NewTCPSourceHandler(host string, port int) (*TCPSourceHandler, error) {
 		return nil, err
 	}
 	return &TCPSourceHandler{address: address, listener: listener}, nil
+}
+
+// NewTCPDestinationHandler initializes a mew TCP destination handler
+func NewDestinationHandler(host string, port int) (*TCPDestinationHandler, error) {
+	address := fmt.Sprintf("%s:%d", host, port)
+	conn, err := net.Dial("tcp", address)
+	if err != nil {
+		return nil, err
+	}
+	return &TCPDestinationHandler{address: address, conn: conn}, nil
 }
 
 // Listen starts the TCP server, accepting connections and reading messages.
