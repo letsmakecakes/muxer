@@ -1,9 +1,10 @@
 package config
 
 type Destination struct {
-	Protocol string
-	Host     string
-	Port     string
+	Protocol     string
+	Host         string
+	Port         int
+	TopicOrQueue string
 }
 
 type Config struct {
