@@ -2,7 +2,13 @@ package muxer
 
 import (
 	"flag"
+	"fmt"
 	"log"
+	"muxer/internal/config"
+	"muxer/pkg/utils"
+	"os"
+	"os/signal"
+	"syscall"
 )
 
 func main() {
@@ -17,6 +23,31 @@ func main() {
 	if *sourceProtocol == "" || *sourcePort == 0 || *destinations == "" {
 		log.Fatalf("source-protocol, source-port, and destinations are required fields")
 	}
-	
-	destConfigs
+
+	destConfigs, err := utils.ParseDestinations(*destinations)
+	if err != nil {
+		log.Fatal("Error parsing destinations: %v", err)
+	}
+
+	config := config.Config{
+		SourceProtocol: *sourceProtocol,
+		SourceHost:     *sourceHost,
+		SourcePort:     *sourcePort,
+		SourceTopic:    *sourceTopicOrQueue,
+		Destinations:   destConfigs,
+	}
+
+	// TODO: Initialize muxer with source and destination configurations
+
+	// TODO: Start multiplexing
+
+	stop := make(chan os.Signal, 1)
+	signal.Notify(stop, syscall.SIGINT, syscall.SIGTERM)
+	<-stop
+
+	fmt.Println("\nShutting down muxer...")
+
+	// TODO: Graceful shutdowm muxer
+
+	fmt.Println("Muxer stopped gracefully")
 }
