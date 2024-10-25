@@ -5,3 +5,11 @@ type Destination struct {
 	Host     string
 	Port     string
 }
+
+type Config struct {
+	SourceProtocol string
+	SourceHost     string
+	SourcePort     int
+	SourceTopic    string
+	Destinations   []Destination
+}
