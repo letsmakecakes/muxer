@@ -43,3 +43,9 @@ func NewSourceHandler(protocol, host string, port int, topic string) (SourceHand
 
 	return nil, fmt.Errorf("unsupported source protocol: %s", protocol)
 }
+
+func NewDestinationHandler(protocol, host string, port int, topicOrQueue string) (DestinationHandler, error) {
+	switch protocol {
+	}
+	return nil, fmt.Errorf("unsupported destination protocol: %s", protocol)
+}
